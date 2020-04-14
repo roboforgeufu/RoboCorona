@@ -41,19 +41,19 @@ class Robot:
     Nesse caso, nao seria necessario verificar o tipo de sensor, pois sempre saberiamos qual o tipo e de que forma utiliza-lo."""
 
     def iniciaSensorCor(self, portaSensor): # Para o sensor de cor
-        self.sensor = ColorSensor()
+        self.sensor = ColorSensor(portaSensor)
         self.tipoSensor = "cor"
 
     def iniciaSensorUltra(self, portaSensor): # Para o sensor ultrassonico
-        self.sensor = UltrasonicSensor()
+        self.sensor = UltrasonicSensor(portaSensor)
         self.tipoSensor = "ultra"
 
     def iniciaSensorInfra(self, portaSensor): # Para o sensor infravermelho
-        self.sensor = InfraredSensor()
+        self.sensor = InfraredSensor(portaSensor)
         self.tipoSensor = "infra"
 
     def iniciaSensorGiro(self, portaSensor): # Para o sensor giroscopio
-        self.sensor = GyroSensor()
+        self.sensor = GyroSensor(portaSensor)
         self.tipoSensor = "giro"
 
     """Metodos para utilizacao dos recursos do robo:"""
@@ -70,7 +70,7 @@ class Robot:
         self.motorEsquerdo.stop()
 
     def andarRetoGraus(self, veloc, graus):
-        while (self.motorEsquerdo.angle() < graus) and (self.motorEsquerdo.angle() < graus):
+        while (self.motorEsquerdo.angle() < graus) and (self.motorDireito.angle() < graus):
             self.motorDireito.run(veloc)
             self.motorEsquerdo.run(veloc)
 
