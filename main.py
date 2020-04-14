@@ -26,7 +26,7 @@ class Robot:
         """Esse metodo é a função de inicialização de um novo dado do tipo 'Robot'.
         Podemos dizer, então, que é o método de inicialização de um novo objeto da classe 'Robot'.
 
-        Passamos os parametros: 
+        Passamos os parametros:
         'self', por ser um método, e as portas que serão associadas aos elementos do robo:"""
 
         self.motorEsquerdo = Motor(portaMotorEsquerdo)
@@ -43,7 +43,7 @@ class Robot:
     def iniciaSensorCor(self, portaSensor): # Para o sensor de cor
         self.sensor = ColorSensor()
         self.tipoSensor = "cor"
-    
+
     def iniciaSensorUltra(self, portaSensor): # Para o sensor ultrassonico
         self.sensor = UltrasonicSensor()
         self.tipoSensor = "ultra"
@@ -55,7 +55,7 @@ class Robot:
     def iniciaSensorGiro(self, portaSensor): # Para o sensor giroscopio
         self.sensor = GyroSensor()
         self.tipoSensor = "giro"
-    
+
     """Metodos para utilizacao dos recursos do robo:"""
 
     def andarTempo(self, velocEsquerda, velocDireita, tempo):
@@ -65,7 +65,7 @@ class Robot:
         while cronometro.time() < tempo:
             self.motorDireito.run(velocEsquerda)
             self.motorEsquerdo.run(velocDireita)
-        
+
         self.motorDireito.stop()
         self.motorEsquerdo.stop()
 
@@ -73,20 +73,20 @@ class Robot:
         while (self.motorEsquerdo.angle() < graus) and (self.motorEsquerdo.angle() < graus):
             self.motorDireito.run(veloc)
             self.motorEsquerdo.run(veloc)
-        
+
         self.motorDireito.stop()
         self.motorEsquerdo.stop()
-    
+
     def curvaGiro(self, veloc, graus): # Curva com os dois motores utilizando o giroscopio
         if self.tipoSensor != "giro": # Verifica se o sensor do tipo certo esta conectado
             print("ERRO: GIROSCOPIO NAO CONECTADO.")
             return False # Interrompe o metodo
-        
+
         self.sensor.reset_angle(0)
         while self.sensor.angle() < graus:
             self.motorDireito.run(-veloc)
             self.motorEsquerdo.run(veloc)
-        
+
         self.motorDireito.stop()
         self.motorEsquerdo.stop()
 
@@ -94,37 +94,81 @@ class Robot:
         if self.tipoSensor != "ultra" and self.tipoSensor != "infra": # O mesmo codigo funciona pro ultrassonico e pro infravermelho
             print("ERRO: SENSOR DE DISTANCIA NAO CONECTADO")
             return False # Interrompe o metodo
-        
+
         while self.sensor.distance() < distancia:
             self.motorEsquerdo.run(veloc)
             self.motorDireito.run(veloc)
         self.motorEsquerdo.stop()
         self.motorDireito.stop()
-    
+
     def andaAteCor(self, veloc, cor):
         if self.tipoSensor != "cor":
             print("ERRO: SENSOR DE COR NAO CONECTADO")
             return False # Interrompe o metodo
-        
+
         while self.sensor.color() != cor:
             self.motorEsquerdo.run(veloc)
             self.motorDireito.run(veloc)
         self.motorEsquerdo.stop()
         self.motorDireito.stop()
 
+    def angPoligono(self, lados):
+        if lados <= 2 :
+            print("NAO EH UM POLIGONO")
+            return False
+        if self.tipoSensor != "giro":
+            print("ERRO: SENSOR GIROSCOPIO NAO CONECTADO")
+            return False # Interrompe o metodo
+        angint = (((lados - 2)*180)/lados)
+        #calculo para angulos internos de um polígono"
+        return angint
 
 
-"""umas ideia de codigo ae q da pra faze ja ~~ae lucao
-*So lembrar de inicializar o sensor (alem do robo) pra cada codigo.
-    fiz desse jeito pra ser um sensor conectado por vez, mas ainda dar pra usar diferentes tipos de sensores com o mesmo codigo
 
-desenhar quadrado no chao
-desenhar triangulo no chao
-desenhar pentagono no chao
-desenhar hexagono no chao
-da pra desenhar os negocio no chao (curva com o giroscopio)
 
-codigo q o robo anda, se ver obstaculo vira, e continua andando (ultrassonico ou infraverm)
+def main():
+    """essa main contém a instanciação do robô e
+    uma ideia para a realização de polígonos regulares"""
+    brabo = Robot(portaMotorEsquerdo = Port.A, portaMotorDireito = Port.B)
+    #declaração do robô e as portas usadas
+    brabo.iniciaSensorGiro(Port.S1)
+    #instanciação
 
-codigo pro robo andar em zigezage (curva com o giroscopio)"""
+    for i in range(lados):
+        brabo.curvaGiro(veloc, brabo.angPoligono(lados))
+        brabo.andarTempo(velocEsquerda, velocDireita, tempo)
+        #iteração para cada lado do polígono
 
+def main2():
+    """essa main contém a instanciação do robô e
+    uma ideia para a realização de desvio de obstáculos"""
+    brabo2 = Robot(portaMotorEsquerdo = Port.A, portaMotorDireito = Port.B)
+    brabo2.iniciaSensorGiro(Port.S1)
+    brabo2.iniciaSensorUltra(Port.S2)
+    #declaração do robô e as portas usadas
+    while True:
+        brabo2.andaAteObstaculo(veloc,distancia)
+        brabo2.curvaGiro(veloc, 45)
+        #código de loop, usando as funções do giroscopio e do ultrassonico
+
+
+def main3():
+        """essa main contém a instanciação do robô e
+        uma ideia para a realização de zigue zagues"""
+    brabo3 = Robot(portaMotorEsquerdo = Port.A, portaMotorDireito = Port.B)
+    brabo3.iniciaSensorGiro(Port.S1)
+        #declaração do robô e as portas usadas
+    while True:
+        brabo3.curvaGiro(veloc,90)
+        brabo3.andarTempo(velocEsquerda, velocDireita, tempo)
+        brabo3.curvaGiro(veloc,-90)
+        brabo3.andarTempo(velocEsquerda, velocDireita, tempo)
+        brabo3.curvaGiro(veloc,-90)
+        brabo3.andarTempo(velocEsquerda, velocDireita, tempo)
+        brabo3.curvaGiro(veloc,90)
+        brabo3.andarTempo(velocEsquerda, velocDireita, tempo)
+        #código de loop, usando as funções do giroscopio para realização do zigue zague
+
+main()
+#main2()
+#main3()
